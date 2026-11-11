@@ -36,6 +36,15 @@ TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
 
+# A/B on dynamic partitions; slot B partitions are empty on stock, so no virtual A/B.
+# Not usable for OTA while vendor is missing from this list: update_engine recreates the
+# target-slot group from the payload only, and that slot would have no vendor.
+AB_OTA_UPDATER := true
+AB_OTA_PARTITIONS := \
+    system \
+    system_ext \
+    product
+
 # Partitions (stock rawprogram sizes)
 BOARD_FLASH_BLOCK_SIZE := 262144
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
