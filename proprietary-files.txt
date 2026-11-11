@@ -1,0 +1,5 @@
+# Proprietary files of the pearl family, extracted from the stock TB-J706F_S620150_211226_ROW
+# vendor only (never from another model or firmware release).
+#
+# Empty while the stock vendor partition is kept (phase 1): nothing from it is reinstalled.
+# The working list is maintained outside this repository until every entry is classified.
