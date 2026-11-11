@@ -26,6 +26,15 @@
             <instance>default</instance>
         </interface>
     </hal>
+    <!-- The stock vendor also serves a WiGig instance of hostapd; FCM level 5 only lists "default". -->
+    <hal format="hidl" optional="true">
+        <name>android.hardware.wifi.hostapd</name>
+        <version>1.2</version>
+        <interface>
+            <name>IHostapd</name>
+            <instance>wigighostapd</instance>
+        </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>vendor.lenovo.hardware.factory</name>
         <version>1.0</version>
