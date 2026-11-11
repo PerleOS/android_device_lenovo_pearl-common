@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SPDX-FileCopyrightText: The PerleOS Project
+    SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Brightness. Stock uses a minimum of 38 and a default of 102. PerleOS chooses backlight 20
+         as the slider bottom (backlight 1 is close to black on this panel). The framework's slider
+         lower bound stays at 0, so the backlight/nits arrays do the remap. -->
+    <integer name="config_screenBrightnessSettingMinimum">20</integer>
+    <item name="config_screenBrightnessSettingMinimumFloat" format="float" type="dimen">0.07480315</item>
+    <item name="config_screenBrightnessSettingMaximumFloat" format="float" type="dimen">1.0</item>
+    <item name="config_screenBrightnessSettingDefaultFloat" format="float" type="dimen">0.39763778</item>
+
+    <integer-array name="config_screenBrightnessBacklight">
+        <item>20</item>
+        <item>255</item>
+    </integer-array>
+    <array name="config_screenBrightnessNits">
+        <item>2.0</item>
+        <item>500.0</item>
+    </array>
+
+    <!-- Auto-brightness: lux levels from the stock S620150 product/overlay/FrameworksResCommon.apk.
+         The stock backlight curve (81, 81, 127, 155, 206, 245, 255) is expressed on the nits line
+         above, because Android rejects config_autoBrightnessLcdBacklightValues next to nits arrays.
+         The nits values are a linear mapping, not a measurement. -->
+    <bool name="config_automatic_brightness_available">true</bool>
+    <integer-array name="config_autoBrightnessLevels">
+        <item>10</item>
+        <item>60</item>
+        <item>210</item>
+        <item>350</item>
+        <item>420</item>
+        <item>1000</item>
+    </integer-array>
+    <array name="config_autoBrightnessDisplayValuesNits">
+        <item>131.27</item>
+        <item>131.27</item>
+        <item>228.75</item>
+        <item>288.09</item>
+        <item>396.16</item>
+        <item>478.81</item>
+        <item>500.0</item>
+    </array>
+</resources>

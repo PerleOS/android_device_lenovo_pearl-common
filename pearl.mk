@@ -34,6 +34,10 @@ PRODUCT_PACKAGES += \
     update_engine_sideload \
     update_verifier
 
+# Static overlay, compiled into framework-res on system (RRO enforcement is off for this
+# product; an enforced RRO from DEVICE_PACKAGE_OVERLAYS would land in the unbuilt vendor).
+DEVICE_PACKAGE_OVERLAYS += $(COMMON_PATH)/overlay
+
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(COMMON_PATH)
