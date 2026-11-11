@@ -46,6 +46,12 @@ PRODUCT_PRODUCT_PROPERTIES += \
     audio.sys.routing.latency=0 \
     ro.af.client_heap_size_kbyte=7168
 
+# Input: keyboard pack layout and pen configuration from the stock system partition.
+# The vendor partition is not built in phase 1, so they go to /system/usr.
+PRODUCT_COPY_FILES += \
+    $(COMMON_PATH)/keylayout/Vendor_17ef_Product_610b.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/Vendor_17ef_Product_610b.kl \
+    $(COMMON_PATH)/idc/Vendor_beef_Product_dead.idc:$(TARGET_COPY_OUT_SYSTEM)/usr/idc/Vendor_beef_Product_dead.idc
+
 # Static overlay, compiled into framework-res on system (RRO enforcement is off for this
 # product; an enforced RRO from DEVICE_PACKAGE_OVERLAYS would land in the unbuilt vendor).
 DEVICE_PACKAGE_OVERLAYS += $(COMMON_PATH)/overlay
