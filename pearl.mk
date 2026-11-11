@@ -18,6 +18,9 @@ PRODUCT_AAPT_PREF_CONFIG := xhdpi
 # No super_empty.img: its layout would describe the group without the stock vendor_a.
 PRODUCT_BUILD_SUPER_EMPTY_IMAGE := false
 
+# The stock vendor is built against VNDK 30: ship com.android.vndk.v30 in system_ext.
+PRODUCT_EXTRA_VNDK_VERSIONS := 30
+
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
