@@ -132,3 +132,9 @@ TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 # stock system_ext policy, and the stock vendor's mount of the lenovocust partition there may
 # fail without harm.
 
+# VINTF: HALs of the stock vendor that no LineageOS or QTI framework matrix lists.
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
+    $(COMMON_PATH)/framework_compatibility_matrix.xml \
+    hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
+    vendor/lineage/config/device_framework_matrix.xml
+

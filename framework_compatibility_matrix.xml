@@ -1,0 +1,37 @@
+<!--
+    SPDX-FileCopyrightText: The PerleOS Project
+    SPDX-License-Identifier: Apache-2.0
+
+    HALs served by the stock S620150 vendor that no LineageOS or QTI framework matrix lists.
+    Versions and instances copied from the stock vendor/etc/vintf/manifest.xml.
+-->
+<compatibility-matrix version="2.0" type="framework">
+    <hal format="hidl" optional="true">
+        <name>vendor.dolby.hardware.dms</name>
+        <version>2.0</version>
+        <interface>
+            <name>IDms</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.goodix.hardware.biometrics.fingerprint</name>
+        <version>2.1</version>
+        <interface>
+            <name>IGoodixFingerprintDaemon</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IGoodixFingerprintDaemonExt</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl" optional="true">
+        <name>vendor.lenovo.hardware.factory</name>
+        <version>1.0</version>
+        <interface>
+            <name>IFactory</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+</compatibility-matrix>
