@@ -123,3 +123,12 @@ BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 2
 
+# Recovery fstab (stock vendor/etc/fstab.qcom without the GSI avb_keys)
+TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/etc/fstab.qcom
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
+
+# The stock root has no /dsp, /firmware or /bt_firmware symlinks: the stock fstab mounts those
+# partitions under /vendor. /lenovocust is deliberately absent: its label exists only in the
+# stock system_ext policy, and the stock vendor's mount of the lenovocust partition there may
+# fail without harm.
+
