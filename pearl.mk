@@ -15,6 +15,9 @@ PRODUCT_CHARACTERISTICS := tablet
 PRODUCT_AAPT_CONFIG := normal large xlarge
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
+# No super_empty.img: its layout would describe the group without the stock vendor_a.
+PRODUCT_BUILD_SUPER_EMPTY_IMAGE := false
+
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(COMMON_PATH)
