@@ -34,6 +34,18 @@ PRODUCT_PACKAGES += \
     update_engine_sideload \
     update_verifier
 
+# Audio properties of the stock product partition, which this build replaces
+PRODUCT_PRODUCT_PROPERTIES += \
+    af.fast_track_multiplier=1 \
+    audio.deep_buffer.media=true \
+    audio.offload.min.duration.secs=30 \
+    audio.offload.video=true \
+    audio.sys.mute.latency.factor=2 \
+    audio.sys.noisy.broadcast.delay=500 \
+    audio.sys.offload.pstimeout.secs=3 \
+    audio.sys.routing.latency=0 \
+    ro.af.client_heap_size_kbyte=7168
+
 # Static overlay, compiled into framework-res on system (RRO enforcement is off for this
 # product; an enforced RRO from DEVICE_PACKAGE_OVERLAYS would land in the unbuilt vendor).
 DEVICE_PACKAGE_OVERLAYS += $(COMMON_PATH)/overlay
