@@ -15,6 +15,14 @@ ifeq ($(PEARL_BUILD_VENDOR),true)
 $(error PEARL_BUILD_VENDOR: building the vendor partition needs the blob list, VINTF manifest and vendor properties first)
 endif
 
+# Without a vendor image, device/lineage/sepolicy/qcom/sepolicy.mk defaults this to true and
+# moves its "dynamic" and "system" rules into system_ext. They use eight QTI vendor-side types
+# (adsprpcd_file, bt_firmware_file, firmware_file, hal_graphics_composer_default,
+# vendor_display_prop, vendor_qdisplay_service, hal_lineage_livedisplay_sysfs,
+# vendor_sysfs_graphics) that system_ext cannot see, so the build fails; they also target
+# LineageOS HALs the stock vendor does not have. Keep them on the (unbuilt) vendor side.
+TARGET_USES_PREBUILT_VENDOR_SEPOLICY := false
+
 # Platform
 BOARD_VENDOR := lenovo
 TARGET_BOARD_PLATFORM := sm6150
@@ -138,3 +146,6 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
     vendor/lineage/config/device_framework_matrix.xml
 
+# SELinux
+TARGET_SEPOLICY_DIR := msmsteppe
+include device/qcom/sepolicy_vndr/SEPolicy.mk
