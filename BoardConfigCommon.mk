@@ -111,3 +111,15 @@ BOARD_BUILD_SUPER_IMAGE_BY_DEFAULT := false
 
 -include vendor/lineage/config/BoardConfigReservedSize.mk
 
+# AVB. system, system_ext and product are verified through vbmeta_system (stock fstab:
+# avb=vbmeta_system). Stock vbmeta (SHA256_RSA4096) chains vbmeta_system with a Lenovo key at
+# rollback index location 2 (avbtool info_image of the stock vbmeta.img). With the device's
+# vbmeta_a flashed with verification disabled, vbmeta_system is not read at all.
+BOARD_AVB_ENABLE := true
+BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
+BOARD_AVB_VBMETA_SYSTEM := system system_ext product
+BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
+BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION := 2
+
