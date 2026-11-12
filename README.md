@@ -24,4 +24,4 @@ The trees build `system`, `system_ext` and `product` only. The stock vendor, ker
 
 ## Licence
 
-Apache-2.0, see `LICENSE`.
+Apache-2.0, see `LICENSE`, except `rootdir/etc/fstab.qcom`, which keeps its BSD-3-Clause header from The Linux Foundation.
