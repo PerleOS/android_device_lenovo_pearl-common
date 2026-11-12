@@ -46,6 +46,10 @@ PRODUCT_PRODUCT_PROPERTIES += \
     audio.sys.routing.latency=0 \
     ro.af.client_heap_size_kbyte=7168
 
+# Speaker layout per display rotation for the stock audio HAL
+PRODUCT_PACKAGES += \
+    PearlAudioRotation
+
 # Input: keyboard pack layout and pen configuration from the stock system partition.
 # The vendor partition is not built in phase 1, so they go to /system/usr.
 PRODUCT_COPY_FILES += \
