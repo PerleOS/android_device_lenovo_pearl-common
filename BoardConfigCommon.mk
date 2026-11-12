@@ -102,6 +102,13 @@ TARGET_KERNEL_CLANG_PATH = $(BUILD_TOP)/prebuilts/clang/kernel/linux-x86/clang-r
 TARGET_KERNEL_LLVM_BINUTILS := false
 TARGET_KERNEL_DTB := qcom/sdmmagpie.dtb qcom/sdmmagpiep.dtb
 
+# The stock vendor keeps its own 38 modules in /vendor/lib/modules. With no vendor image
+# built, kernel.mk would list the in-tree modules in the system image's file list under
+# the wrong path and break it, so install them to /system/lib/modules, which nothing on
+# this device loads from. Disabling them instead would change struct sk_buff
+# (BRIDGE_NETFILTER) and the module ABI.
+NEED_KERNEL_MODULE_SYSTEM := true
+
 # Partitions (stock rawprogram sizes)
 BOARD_FLASH_BLOCK_SIZE := 262144
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
