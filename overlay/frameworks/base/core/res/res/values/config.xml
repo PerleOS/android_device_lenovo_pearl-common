@@ -50,4 +50,8 @@
         <item>478.81</item>
         <item>500.0</item>
     </array>
+
+    <!-- The Goodix fingerprint sensor is in the power button. The HIDL 2.1 HAL does not report
+         a sensor type, so without this Settings uses the rear-sensor enrollment screen. -->
+    <bool name="config_is_powerbutton_fps">true</bool>
 </resources>
