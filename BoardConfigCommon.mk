@@ -149,3 +149,5 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
 # SELinux
 TARGET_SEPOLICY_DIR := msmsteppe
 include device/qcom/sepolicy_vndr/SEPolicy.mk
+# Labels the stock vendor policy lacks; vendor policy is not rebuilt in phase 1.
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/private
