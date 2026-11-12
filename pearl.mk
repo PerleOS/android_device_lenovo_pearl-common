@@ -50,6 +50,11 @@ PRODUCT_PRODUCT_PROPERTIES += \
 PRODUCT_PACKAGES += \
     PearlAudioRotation
 
+# First-stage fstab. The bootloader passes androidboot.fstab_suffix=default, and the stock
+# ramdisk carries fstab.default; this is the same table without the GSI avb_keys.
+PRODUCT_COPY_FILES += \
+    $(COMMON_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_RAMDISK)/fstab.default
+
 # Input: keyboard pack layout and pen configuration from the stock system partition.
 # The vendor partition is not built in phase 1, so they go to /system/usr.
 PRODUCT_COPY_FILES += \
