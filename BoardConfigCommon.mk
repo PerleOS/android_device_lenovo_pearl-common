@@ -54,7 +54,6 @@ AB_OTA_PARTITIONS := \
     product
 
 # Boot image (stock boot.img header v2, page size 4096, kernel/ramdisk/tags/dtb offsets).
-# Only built for comparison with stock until phase 1b.
 BOARD_BOOT_HEADER_VERSION := 2
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
@@ -86,6 +85,22 @@ BOARD_KERNEL_CMDLINE := \
 
 BOARD_KERNEL_IMAGE_NAME := Image.gz
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+
+# Keep the stock boot image OS version and patch level. Keymaster binds keys to the
+# patch level and only moves it forward, so a later date in boot.img would make a return
+# to the stock boot image lose them. BOARD_MKBOOTIMG_ARGS comes after the build's own
+# --os_version/--os_patch_level, and mkbootimg keeps the last value.
+BOARD_MKBOOTIMG_ARGS += --os_version 11.0.0 --os_patch_level 2021-12
+
+# Kernel source (kernel/lenovo/sm6150). Built like the stock kernel: clang with GNU
+# binutils 2.27, so that the stock vendor modules keep loading (same symbol CRCs).
+# Only the base SoC device trees are built; the bootloader picks sdmmagpiep on this SoC
+# and applies the stock dtbo on top.
+TARGET_KERNEL_CLANG_VERSION := r416183b
+# Recursive assignment: BUILD_TOP is not set yet when BoardConfig is read.
+TARGET_KERNEL_CLANG_PATH = $(BUILD_TOP)/prebuilts/clang/kernel/linux-x86/clang-r416183b
+TARGET_KERNEL_LLVM_BINUTILS := false
+TARGET_KERNEL_DTB := qcom/sdmmagpie.dtb qcom/sdmmagpiep.dtb
 
 # Partitions (stock rawprogram sizes)
 BOARD_FLASH_BLOCK_SIZE := 262144
