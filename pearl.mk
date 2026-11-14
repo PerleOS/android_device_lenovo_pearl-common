@@ -46,6 +46,26 @@ PRODUCT_PRODUCT_PROPERTIES += \
     audio.sys.routing.latency=0 \
     ro.af.client_heap_size_kbyte=7168
 
+# Bluetooth: since Android 13 the profiles are enabled by these properties instead of the
+# Bluetooth app's config.xml; the Android 11 stock vendor predates them. The WCN3990
+# controller runs HCI 4.2, so the LE Audio profiles stay off. Class of device: Networking,
+# Object Transfer and Audio services (0x32), major class Computer (1), minor class Tablet
+# (7 << 2); optional, so that a device tree can set its own.
+PRODUCT_PRODUCT_PROPERTIES += \
+    bluetooth.device.class_of_device?=50,1,28 \
+    bluetooth.profile.a2dp.source.enabled=true \
+    bluetooth.profile.asha.central.enabled=true \
+    bluetooth.profile.avrcp.target.enabled=true \
+    bluetooth.profile.bas.client.enabled=true \
+    bluetooth.profile.gatt.enabled=true \
+    bluetooth.profile.hfp.ag.enabled=true \
+    bluetooth.profile.hid.device.enabled=true \
+    bluetooth.profile.hid.host.enabled=true \
+    bluetooth.profile.opp.enabled=true \
+    bluetooth.profile.pan.nap.enabled=true \
+    bluetooth.profile.pan.panu.enabled=true \
+    bluetooth.profile.pbap.server.enabled=true
+
 # Speaker layout per display rotation for the stock audio HAL
 PRODUCT_PACKAGES += \
     PearlAudioRotation
