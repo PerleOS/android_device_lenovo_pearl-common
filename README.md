@@ -13,7 +13,9 @@ Common PerleOS device tree for the Lenovo Tab P11 Pro family (codename `pearl`):
 
 ## Current phase
 
-The trees build `system`, `system_ext` and `product` only. The stock vendor, kernel, DTB and DTBO of the TB-J706F firmware `S620150_211226_ROW` stay on the device. These images are written to `system_a`, `system_ext_a` and `product_a`. Never use `fastboot update`, `flashall` or `update-super` with them: their super layout has no `vendor`, so those commands would remove `vendor_a` from the device.
+The trees build `boot` (kernel from source), `system`, `system_ext` and `product`. The stock vendor and DTBO of the TB-J706F firmware `S620150_211226_ROW` stay on the device. These images are written to `boot_a`, `system_a`, `system_ext_a` and `product_a`. Never use `fastboot update`, `flashall` or `update-super` with them: their super layout has no `vendor`, so those commands would remove `vendor_a` from the device.
+
+The system images need the `boot.img` of this build. They use the unmodified LineageOS BPF loaders and network stack, which need BPF object names and per-file bpffs labels; the stock kernel has neither, so with the stock boot image the device boot-loops (`bpfloader` fails).
 
 ## Rules for contributors
 
