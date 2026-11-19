@@ -129,11 +129,13 @@ BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
 
 # Super: 12 GiB, groups qti_dynamic_partitions_a/_b of 6,438,256,640 bytes each (stock LP
-# metadata). The stock vendor_a keeps 691,507,200 bytes of the group, so the images built here
-# share the remaining 5,746,749,440 bytes. Checked by the check-all-partition-sizes goal.
+# metadata). vendor_a takes 750,227,456 bytes of the group with the vendor image that carries
+# the modules built from this kernel tree (691,507,200 for the stock one, whose filesystem
+# shares blocks between files), so the images built here share the remaining 5,688,029,184
+# bytes. Checked by the check-all-partition-sizes goal.
 BOARD_SUPER_PARTITION_SIZE := 12884901888
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 5746749440
+BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 5688029184
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := system system_ext product
 # Never produce a super image (see also PRODUCT_BUILD_SUPER_EMPTY_IMAGE in pearl.mk): a super
 # layout without vendor would remove vendor_a from the device's LP metadata.
