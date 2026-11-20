@@ -54,4 +54,11 @@
     <!-- The Goodix fingerprint sensor is in the power button. The HIDL 2.1 HAL does not report
          a sensor type, so without this Settings uses the rear-sensor enrollment screen. -->
     <bool name="config_is_powerbutton_fps">true</bool>
+
+    <!-- From the stock vendor RRO (vendor/overlay/FrameworksResTarget.apk), which a rebuilt vendor
+         does not ship: the tablet has no navigation keys, and the headset jack is reported by the
+         kernel as input switch events. The RRO's config_tether_wifi_regexs is not carried over:
+         Tethering reads its own config_tether_wifi_regexs, which already matches wlan\d. -->
+    <bool name="config_showNavigationBar">true</bool>
+    <bool name="config_useDevInputEventForAudioJack">true</bool>
 </resources>
