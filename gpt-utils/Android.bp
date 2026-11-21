@@ -1,0 +1,32 @@
+//
+// SPDX-FileCopyrightText: 2018 The Android Open Source Project
+// SPDX-FileCopyrightText: The PerleOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// gpt-utils from CAF device/qcom/common, as carried by LineageOS
+// android_device_motorola_sm6150-common (cdcf86107f6b539efb70ac13fda0b588b46c8eed).
+// The boot control HAL uses it to update the A/B slot attributes in the GPT. The partition
+// lists in gpt-utils.h are those of the stock S620150 libboot_control_qti.so.
+cc_library {
+    name: "libgptutils.lenovo_sm6150",
+    vendor: true,
+    recovery_available: true,
+    shared_libs: [
+        "libcutils",
+        "liblog",
+        "libz",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+    srcs: [
+        "gpt-utils.cpp",
+    ],
+    owner: "qti",
+    header_libs: [
+        "generated_kernel_headers",
+    ],
+    export_include_dirs: ["."],
+}
