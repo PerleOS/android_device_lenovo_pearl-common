@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Lenovo properties of the stock S620150 vendor policy. ro.boot.* entries are left out: that
+# namespace belongs to the bootloader.
+
+ro.odm.lenovo.                  u:object_r:lenovo_ro_prop:s0
+ro.odm.lenovo.attestationkey    u:object_r:lenovotb_init_prop:s0
+ro.odm.lenovo.btaddr            u:object_r:lenovotb_init_prop:s0
+ro.odm.lenovo.factory.version   u:object_r:lenovotb_init_prop:s0
+ro.odm.lenovo.flow              u:object_r:lenovotb_init_prop:s0
+ro.odm.lenovo.fp.incremental    u:object_r:lenovotb_init_prop:s0
+ro.odm.lenovo.gsn               u:object_r:lenovotb_init_prop:s0
+ro.odm.lenovo.pro_eea           u:object_r:lenovotb_init_prop:s0
+ro.odm.lenovo.psn               u:object_r:lenovotb_init_prop:s0
+ro.odm.lenovo.wifiaddr          u:object_r:lenovotb_init_prop:s0
+persist.odm.lenovo.             u:object_r:lenovotb_init_prop:s0

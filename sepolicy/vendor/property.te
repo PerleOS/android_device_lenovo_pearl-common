@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Lenovo properties of the stock S620150 vendor policy.
+
+vendor_restricted_prop(lenovo_ro_prop)
+vendor_restricted_prop(lenovotb_init_prop)

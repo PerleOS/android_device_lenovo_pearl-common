@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Goodix fingerprint daemon services on vndbinder (stock S620150 vndservice_contexts).
+
+vendor.goodix.hardware.biometrics.fingerprint::IGoodixFingerprintDaemon     u:object_r:goodix_fingerprint_vndservice:s0
+vendor.goodix.hardware.biometrics.fingerprint::IGoodixFingerprintDaemonExt  u:object_r:goodix_fingerprint_vndservice:s0
+vendor.goodix.hardware.biometrics.fingerprint::IGoodixFingerprintDaemonFido u:object_r:goodix_fingerprint_vndservice:s0
+vendor.goodix.hardware.biometrics.fingerprint::IGoodixFingerprintDaemonHbd  u:object_r:goodix_fingerprint_vndservice:s0

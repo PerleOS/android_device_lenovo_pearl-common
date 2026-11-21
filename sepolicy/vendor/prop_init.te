@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# prop_init (stock blob) reads the factory information partition (fpinfo) and publishes the
+# serial numbers and the Wi-Fi and Bluetooth addresses as ro.odm.lenovo.* properties.
+# Rules from the stock S620150 vendor policy.
+
+type prop_init, domain;
+type prop_init_exec, exec_type, vendor_file_type, file_type;
+
+init_daemon_domain(prop_init)
+
+set_prop(prop_init, lenovotb_init_prop)
+get_prop(prop_init, vendor_tee_listener_prop)
+
+allow prop_init block_device:dir r_dir_perms;
+allow prop_init fpinfo_block_device:blk_file rw_file_perms;
+
+allow prop_init mnt_vendor_file:dir search;
+allow prop_init vendor_persist_nv_file:dir rw_dir_perms;
+allow prop_init vendor_persist_nv_file:file create_file_perms;
+
+allow prop_init self:qipcrtr_socket create_socket_perms_no_ioctl;
+allow prop_init tee_device:chr_file rw_file_perms;
+allow prop_init ion_device:chr_file rw_file_perms;
+
+r_dir_file(prop_init, sysfs_hwinfo)
+r_dir_file(prop_init, vendor_sysfs_diag)
+
+userdebug_or_eng(`
+  allow prop_init vendor_diag_device:chr_file rw_file_perms;
+')

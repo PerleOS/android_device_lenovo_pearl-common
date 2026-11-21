@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Goodix fingerprint HAL (stock fingerprint.default.so, loaded by the AOSP 2.1 service). Rules
+# from the stock S620150 vendor policy: the sensor device, the TEE, the netlink socket of the
+# Goodix driver, uhid for navigation gestures, and the Goodix daemon services on vndbinder.
+
+allow hal_fingerprint_default fingerprintd_device:chr_file rw_file_perms;
+allow hal_fingerprint_default tee_device:chr_file rw_file_perms;
+allow hal_fingerprint_default uhid_device:chr_file rw_file_perms;
+allow hal_fingerprint_default self:netlink_socket create_socket_perms_no_ioctl;
+
+vndbinder_use(hal_fingerprint_default)
+add_service(hal_fingerprint_default, goodix_fingerprint_vndservice)

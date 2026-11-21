@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Types of the stock S620150 vendor policy for Lenovo files and devices.
+
+type fingerprintd_device, dev_type;
+type fpinfo_block_device, dev_type;
+type sysfs_hwinfo, fs_type, sysfs_type;
+type vendor_persist_nv_file, file_type, vendor_persist_type;

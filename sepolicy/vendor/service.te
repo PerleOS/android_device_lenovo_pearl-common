@@ -1,0 +1,4 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+
+type goodix_fingerprint_vndservice, vndservice_manager_type;
