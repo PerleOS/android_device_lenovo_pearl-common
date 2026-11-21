@@ -131,6 +131,12 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.display.allocator-service \
     vendor.qti.hardware.memtrack-service
 
+# The AOSP base vendor adds the configstore HAL for shipping API level 29. It is deprecated
+# (absent from the FCM 7 matrix), the stock vendor did not ship it, and SurfaceFlinger reads
+# its settings from system properties.
+PRODUCT_PACKAGES += \
+    disable_configstore
+
 # Fingerprint: the AOSP 2.1 service loads Goodix's fingerprint.default module (blob)
 PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.1-service

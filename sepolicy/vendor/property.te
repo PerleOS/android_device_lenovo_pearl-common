@@ -5,3 +5,6 @@
 
 vendor_restricted_prop(lenovo_ro_prop)
 vendor_restricted_prop(lenovotb_init_prop)
+
+# ro.odm.lenovo.* come from vendor.prop, which init loads as vendor_init.
+set_prop(vendor_init, lenovo_ro_prop)

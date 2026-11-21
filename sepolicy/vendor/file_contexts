@@ -13,3 +13,4 @@
 /mnt/vendor/persist/camera(/.*)?                                           u:object_r:vendor_persist_nv_file:s0
 
 /sys/devices/platform/soc/1d84000\.ufshc/size                              u:object_r:sysfs_hwinfo:s0
+/sys/hwinfo(/.*)?                                                          u:object_r:sysfs_hwinfo:s0
