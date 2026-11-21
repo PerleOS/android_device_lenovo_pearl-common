@@ -21,9 +21,18 @@ if [ ! -f "${HELPER}" ]; then
 fi
 source "${HELPER}"
 
+# Package libraries and binaries as Soong prebuilts with their dependencies checked
+export TARGET_ENABLE_CHECKELF=true
+
 function vendor_imports() {
     cat <<EOF >>"$1"
 		"device/lenovo/pearl-common",
+		"hardware/qcom-caf/sm8150",
+		"hardware/qcom-caf/wlan",
+		"vendor/qcom/opensource/commonsys/display",
+		"vendor/qcom/opensource/commonsys-intf/display",
+		"vendor/qcom/opensource/dataservices",
+		"vendor/qcom/opensource/display",
 EOF
 }
 

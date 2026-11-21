@@ -15,11 +15,8 @@ PRODUCT_CHARACTERISTICS := tablet
 PRODUCT_AAPT_CONFIG := normal large xlarge
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
-# No super_empty.img: its layout would describe the group without the stock vendor_a.
+# Images are flashed one by one from fastbootd; no super_empty.img.
 PRODUCT_BUILD_SUPER_EMPTY_IMAGE := false
-
-# The stock vendor is built against VNDK 30: ship com.android.vndk.v30 in system_ext.
-PRODUCT_EXTRA_VNDK_VERSIONS := 30
 
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
@@ -47,8 +44,8 @@ PRODUCT_PRODUCT_PROPERTIES += \
     ro.af.client_heap_size_kbyte=7168
 
 # Bluetooth: since Android 13 the profiles are enabled by these properties instead of the
-# Bluetooth app's config.xml; the Android 11 stock vendor predates them. The WCN3990
-# controller runs HCI 4.2, so the LE Audio profiles stay off. Class of device: Networking,
+# Bluetooth app's config.xml; the stock Android 11 Bluetooth configuration predates them. The
+# WCN3990 controller runs HCI 4.2, so the LE Audio profiles stay off. Class of device: Networking,
 # Object Transfer and Audio services (0x32), major class Computer (1), minor class Tablet
 # (7 << 2); optional, so that a device tree can set its own.
 PRODUCT_PRODUCT_PROPERTIES += \
@@ -70,24 +67,171 @@ PRODUCT_PRODUCT_PROPERTIES += \
 PRODUCT_PACKAGES += \
     PearlAudioRotation
 
-# First-stage fstab. The bootloader passes androidboot.fstab_suffix=default, and the stock
-# ramdisk carries fstab.default; this is the same table without the GSI avb_keys.
+# Fstab. The bootloader passes androidboot.fstab_suffix=default; the stock vendor carries the
+# same table as fstab.default and fstab.qcom. This is the stock table without the GSI avb_keys.
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_RAMDISK)/fstab.default
+    $(COMMON_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_RAMDISK)/fstab.default \
+    $(COMMON_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.default \
+    $(COMMON_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.qcom
+
+# Init: the stock init.target.rc without the services whose binaries are not shipped. It also
+# loads the audio, Cirrus amplifier and Wi-Fi kernel modules.
+PRODUCT_COPY_FILES += \
+    $(COMMON_PATH)/rootdir/etc/init.target.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.target.rc
 
 # Input: keyboard pack layout and pen configuration from the stock system partition.
-# The vendor partition is not built in phase 1, so they go to /system/usr.
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/keylayout/Vendor_17ef_Product_610b.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/Vendor_17ef_Product_610b.kl \
     $(COMMON_PATH)/idc/Vendor_beef_Product_dead.idc:$(TARGET_COPY_OUT_SYSTEM)/usr/idc/Vendor_beef_Product_dead.idc
 
 # Static overlay, compiled into framework-res on system (RRO enforcement is off for this
-# product; an enforced RRO from DEVICE_PACKAGE_OVERLAYS would land in the unbuilt vendor).
+# product).
 DEVICE_PACKAGE_OVERLAYS += $(COMMON_PATH)/overlay
+
+# Audio: Lenovo's audio module (audio.primary.sm6150, with the Cirrus CS35L41 calibration and
+# protection) and its feature libraries stay stock; the AOSP HIDL 6.0 wrapper loads it.
+PRODUCT_PACKAGES += \
+    android.hardware.audio.service \
+    android.hardware.audio@6.0-impl \
+    android.hardware.audio.effect@6.0-impl \
+    android.hardware.bluetooth.audio-impl \
+    android.hardware.soundtrigger@2.3-impl \
+    audio.bluetooth.default \
+    audio.r_submix.default \
+    audio.usb.default \
+    libaudiopreprocessing \
+    libbundlewrapper \
+    libdownmix \
+    libdynproc \
+    libeffectproxy \
+    libldnhncr \
+    libqti_vndfwk_detect.vendor \
+    libreverbwrapper \
+    libvisualizer
+
+# Boot control
+PRODUCT_PACKAGES += \
+    android.hardware.boot@1.2-impl-qti \
+    android.hardware.boot@1.2-impl-qti.recovery \
+    android.hardware.boot@1.2-service
+
+# Camera: the AOSP provider wrapper around the stock camera HAL
+PRODUCT_PACKAGES += \
+    android.hardware.camera.provider@2.4-impl \
+    android.hardware.camera.provider@2.4-service_64
+
+# Display (CAF sm8150 display HAL, as on the LineageOS sm6150 devices)
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.composer@2.4-service \
+    android.hardware.graphics.mapper@3.0-impl-qti-display \
+    android.hardware.graphics.mapper@4.0-impl-qti-display \
+    gralloc.sm6150 \
+    hwcomposer.sm6150 \
+    lights.sm6150 \
+    vendor.qti.hardware.display.allocator-service \
+    vendor.qti.hardware.memtrack-service
+
+# Fingerprint: the AOSP 2.1 service loads Goodix's fingerprint.default module (blob)
+PRODUCT_PACKAGES += \
+    android.hardware.biometrics.fingerprint@2.1-service
+
+# Health
+PRODUCT_PACKAGES += \
+    android.hardware.health-service.qti \
+    android.hardware.health-service.qti_recovery
+
+# Media: CAF OMX core and video components; the stock Codec2 service and OMX audio encoders stay
+PRODUCT_PACKAGES += \
+    android.hardware.cas@1.2-service \
+    android.hardware.media.omx@1.0-service \
+    libc2dcolorconvert \
+    libOmxCore \
+    libOmxVdec \
+    libOmxVenc \
+    libplatformconfig \
+    libstagefrighthw
+
+# Power (QTI AIDL power HAL over the stock perf HAL)
+PRODUCT_PACKAGES += \
+    android.hardware.power-service-qti
+
+# RenderScript
+PRODUCT_PACKAGES += \
+    android.hardware.renderscript@1.0-impl
+
+# Sensors: AOSP multi-HAL over the stock sensors.ssc sub-HAL
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@2.0-service.multihal
+
+# Trace
+PRODUCT_PACKAGES += \
+    android.hardware.atrace@1.0-service
+
+# USB
+PRODUCT_PACKAGES += \
+    android.hardware.usb@1.0-service
+
+# Vibrator
+PRODUCT_PACKAGES += \
+    vendor.qti.hardware.vibrator.service
+
+# Wi-Fi: hostapd and wpa_supplicant from source; the stock Wi-Fi HAL service stays.
+# libwpa_client is linked by the stock lowi-server and mutualex.
+PRODUCT_PACKAGES += \
+    firmware_WCNSS_qcom_cfg.ini_symlink \
+    firmware_wlan_mac.bin_symlink \
+    firmware_wlanmdsp.otaupdate_symlink \
+    hostapd \
+    ipacm \
+    IPACM_cfg.xml \
+    libwifi-hal-qcom \
+    libwpa_client \
+    wpa_supplicant \
+    wpa_supplicant.conf
+
+# Feature files of the stock vendor. handheld_core_hardware.xml replaces Lenovo's Android 11
+# copy with the current AOSP one.
+PRODUCT_COPY_FILES += \
+    $(foreach f, \
+        android.hardware.audio.low_latency.xml \
+        android.hardware.audio.pro.xml \
+        android.hardware.bluetooth.xml \
+        android.hardware.bluetooth_le.xml \
+        android.hardware.camera.flash-autofocus.xml \
+        android.hardware.camera.front.xml \
+        android.hardware.camera.full.xml \
+        android.hardware.camera.raw.xml \
+        android.hardware.fingerprint.xml \
+        android.hardware.location.gps.xml \
+        android.hardware.opengles.aep.xml \
+        android.hardware.sensor.accelerometer.xml \
+        android.hardware.sensor.compass.xml \
+        android.hardware.sensor.gyroscope.xml \
+        android.hardware.sensor.light.xml \
+        android.hardware.sensor.proximity.xml \
+        android.hardware.sensor.stepcounter.xml \
+        android.hardware.sensor.stepdetector.xml \
+        android.hardware.touchscreen.multitouch.jazzhand.xml \
+        android.hardware.usb.accessory.xml \
+        android.hardware.usb.host.xml \
+        android.hardware.vulkan.compute-0.xml \
+        android.hardware.vulkan.level-1.xml \
+        android.hardware.vulkan.version-1_1.xml \
+        android.hardware.wifi.aware.xml \
+        android.hardware.wifi.direct.xml \
+        android.hardware.wifi.passpoint.xml \
+        android.hardware.wifi.rtt.xml \
+        android.hardware.wifi.xml \
+        android.software.ipsec_tunnels.xml \
+        android.software.midi.xml \
+        android.software.sip.voip.xml \
+        android.software.verified_boot.xml \
+        handheld_core_hardware.xml, \
+        frameworks/native/data/etc/$(f):$(TARGET_COPY_OUT_VENDOR)/etc/permissions/$(f))
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(COMMON_PATH)
 
-# Proprietary files (only used once the vendor partition is built)
-$(call inherit-product-if-exists, vendor/lenovo/pearl-common/pearl-common-vendor.mk)
+# Proprietary files
+$(call inherit-product, vendor/lenovo/pearl-common/pearl-common-vendor.mk)

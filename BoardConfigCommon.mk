@@ -7,21 +7,8 @@
 
 COMMON_PATH := device/lenovo/pearl-common
 
-# Phase 1 keeps the stock vendor partition (Android 11, VNDK 30) and builds only system,
-# system_ext and product. BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE stays unset, so no vendor image
-# is defined and nothing vendor-side (vendor properties, VINTF manifest, sepolicy) ships.
-PEARL_BUILD_VENDOR ?= false
-ifeq ($(PEARL_BUILD_VENDOR),true)
-$(error PEARL_BUILD_VENDOR: building the vendor partition needs the blob list, VINTF manifest and vendor properties first)
-endif
-
-# Without a vendor image, device/lineage/sepolicy/qcom/sepolicy.mk defaults this to true and
-# moves its "dynamic" and "system" rules into system_ext. They use eight QTI vendor-side types
-# (adsprpcd_file, bt_firmware_file, firmware_file, hal_graphics_composer_default,
-# vendor_display_prop, vendor_qdisplay_service, hal_lineage_livedisplay_sysfs,
-# vendor_sysfs_graphics) that system_ext cannot see, so the build fails; they also target
-# LineageOS HALs the stock vendor does not have. Keep them on the (unbuilt) vendor side.
-TARGET_USES_PREBUILT_VENDOR_SEPOLICY := false
+# The vendor partition is built: the stock S620150 blobs (vendor/lenovo/pearl-common) with
+# the HALs below the framework matrix and the AOSP/CAF components rebuilt from source.
 
 # Platform
 BOARD_VENDOR := lenovo
@@ -45,13 +32,14 @@ TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
 
 # A/B on dynamic partitions; slot B partitions are empty on stock, so no virtual A/B.
-# Not usable for OTA while vendor is missing from this list: update_engine recreates the
-# target-slot group from the payload only, and that slot would have no vendor.
+# Not usable for OTA yet: boot is missing from the list, and the vendor modules must come with
+# the kernel they were built with. dtbo and vbmeta would stay stock.
 AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS := \
+    product \
     system \
     system_ext \
-    product
+    vendor
 
 # Boot image (stock boot.img header v2, page size 4096, kernel/ramdisk/tags/dtb offsets).
 BOARD_BOOT_HEADER_VERSION := 2
@@ -102,12 +90,9 @@ TARGET_KERNEL_CLANG_PATH = $(BUILD_TOP)/prebuilts/clang/kernel/linux-x86/clang-r
 TARGET_KERNEL_LLVM_BINUTILS := false
 TARGET_KERNEL_DTB := qcom/sdmmagpie.dtb qcom/sdmmagpiep.dtb
 
-# The stock vendor keeps its own 38 modules in /vendor/lib/modules. With no vendor image
-# built, kernel.mk would list the in-tree modules in the system image's file list under
-# the wrong path and break it, so install them to /system/lib/modules, which nothing on
-# this device loads from. Disabling them instead would change struct sk_buff
-# (BRIDGE_NETFILTER) and the module ABI.
-NEED_KERNEL_MODULE_SYSTEM := true
+# The 38 in-tree modules install to /vendor/lib/modules, where init.target.rc loads them. Their
+# file names differ from stock (wlan.ko, not qca_cld3_wlan.ko; X_dlkm.ko, not audio_X.ko), and
+# init.target.rc uses the new ones.
 
 # Partitions (stock rawprogram sizes)
 BOARD_FLASH_BLOCK_SIZE := 262144
@@ -127,18 +112,20 @@ TARGET_COPY_OUT_VENDOR := vendor
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+
+# Vendor AIDs and file capabilities (stock vendor/etc/passwd, group, fs_config_files)
+TARGET_FS_CONFIG_GEN := $(COMMON_PATH)/config.fs
 
 # Super: 12 GiB, groups qti_dynamic_partitions_a/_b of 6,438,256,640 bytes each (stock LP
-# metadata). vendor_a takes 750,227,456 bytes of the group with the vendor image that carries
-# the modules built from this kernel tree (691,507,200 for the stock one, whose filesystem
-# shares blocks between files), so the images built here share the remaining 5,688,029,184
-# bytes. Checked by the check-all-partition-sizes goal.
+# metadata). The four images built here share the whole group. Checked by the
+# check-all-partition-sizes goal.
 BOARD_SUPER_PARTITION_SIZE := 12884901888
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 5688029184
-BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := system system_ext product
-# Never produce a super image (see also PRODUCT_BUILD_SUPER_EMPTY_IMAGE in pearl.mk): a super
-# layout without vendor would remove vendor_a from the device's LP metadata.
+BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 6438256640
+BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := product system system_ext vendor
+# Images are flashed one by one from fastbootd, which resizes them inside the existing group;
+# no super image is produced.
 BOARD_BUILD_SUPER_IMAGE_BY_DEFAULT := false
 
 -include vendor/lineage/config/BoardConfigReservedSize.mk
@@ -160,18 +147,68 @@ TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/etc/fstab.qcom
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 
 # The stock root has no /dsp, /firmware or /bt_firmware symlinks: the stock fstab mounts those
-# partitions under /vendor. /lenovocust is deliberately absent: its label exists only in the
-# stock system_ext policy, and the stock vendor's mount of the lenovocust partition there may
-# fail without harm.
+# partitions under /vendor. /lenovocust is deliberately absent, and init.target.rc does not mount
+# the lenovocust partition (stock mounts it read-write there).
 
-# VINTF: HALs of the stock vendor that no LineageOS or QTI framework matrix lists.
+# Audio: the stock Lenovo audio module and its CAF feature libraries are shipped as blobs, so
+# the CAF audio HAL makefiles must not build their own copies. With no audio directory in the
+# device tree, nothing is built from the device-specific audio path.
+USE_DEVICE_SPECIFIC_AUDIO := true
+# The stock audio module calls the QTI tinycompress extensions (compress_get_metadata,
+# compress_set_next_track_param).
+AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
+
+# Display: board flags of the CAF sm8150 display tree (config/display-board.mk), which the
+# product does not include. TARGET_USES_HWC2 builds hwcomposer.sm6150, as on stock.
+TARGET_USES_GRALLOC1 := true
+TARGET_USES_GRALLOC4 := true
+TARGET_USES_DRM_PP := true
+TARGET_USES_HWC2 := true
+TARGET_USES_QCOM_DISPLAY_BSP := true
+TARGET_USES_DISPLAY_RENDER_INTENTS := true
+TARGET_USES_QTI_MAPPER_2_0 := true
+TARGET_USES_QTI_MAPPER_EXTENSIONS_1_1 := true
+TARGET_FORCE_HWC_FOR_VIRTUAL_DISPLAYS := true
+MAX_VIRTUAL_DISPLAY_DIMENSION := 4096
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
+
+# Media: the CAF OMX video codecs allocate their buffers through ION (kernel 4.14)
+TARGET_USES_ION := true
+
+# Properties
+TARGET_VENDOR_PROP += $(COMMON_PATH)/vendor.prop
+TARGET_ODM_PROP += $(COMMON_PATH)/odm.prop
+
+# Keep the stock vendor security patch level, for the same reason as the boot image's: the
+# stock Keymaster binds keys to it and only moves it forward.
+VENDOR_SECURITY_PATCH := 2021-12-05
+
+# VINTF: the device manifest lists the HALs served by blobs; source-built HALs add their own
+# fragments. The framework matrix adds HALs of the stock vendor that no LineageOS or QTI
+# framework matrix lists.
+DEVICE_MANIFEST_FILE := $(COMMON_PATH)/vintf/manifest.xml
+ODM_MANIFEST_FILES := $(COMMON_PATH)/vintf/manifest-odm.xml
+DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
     $(COMMON_PATH)/framework_compatibility_matrix.xml \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
     vendor/lineage/config/device_framework_matrix.xml
 
+# Wi-Fi (WCN3990, qca_cld3 driver loaded by init.target.rc). hostapd, wpa_supplicant and the
+# QTI Wi-Fi HAL library are built from source; the stock Wi-Fi HAL service is kept.
+BOARD_WLAN_DEVICE := qcwcn
+BOARD_HOSTAPD_DRIVER := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+BOARD_WPA_SUPPLICANT_DRIVER := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+WIFI_DRIVER_DEFAULT := qca_cld3
+WIFI_DRIVER_STATE_CTRL_PARAM := "/dev/wlan"
+WIFI_DRIVER_STATE_OFF := "OFF"
+WIFI_DRIVER_STATE_ON := "ON"
+WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
+WPA_SUPPLICANT_VERSION := VER_0_8_X
+
 # SELinux
 TARGET_SEPOLICY_DIR := msmsteppe
 include device/qcom/sepolicy_vndr/SEPolicy.mk
-# Labels the stock vendor policy lacks; vendor policy is not rebuilt in phase 1.
-SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/private
+BOARD_VENDOR_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor

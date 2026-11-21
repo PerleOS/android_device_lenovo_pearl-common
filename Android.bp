@@ -4,4 +4,50 @@
 //
 
 soong_namespace {
+    imports: [
+        "hardware/qcom-caf/bootctrl",
+    ],
+}
+
+// Boot control HAL 1.2 from the CAF bootctrl sources (the stock vendor ships 1.1, below the
+// framework matrix). It reads and writes the same GPT slot attributes, over the same partition
+// lists, as the stock HAL. On a slot switch it moves the UFS boot LUN through the UFS_IOCTL_QUERY
+// ioctl on /dev/sgN, where the stock HAL uses /dev/ufs-bsg, which this kernel does not have.
+cc_library_shared {
+    name: "android.hardware.boot@1.2-impl-qti",
+    stem: "android.hardware.boot@1.0-impl-1.2-qti",
+    defaults: ["android.hardware.boot@1.2-impl-qti_defaults"],
+    static_libs: ["libgptutils.lenovo_sm6150"],
+}
+
+// mixer_update_ctls() for the stock audio module; added to it as a needed library by
+// extract-files.sh.
+cc_library_shared {
+    name: "libtinyalsa_shim",
+    vendor: true,
+    srcs: ["libshims/tinyalsa_shim.c"],
+    cflags: ["-Wall", "-Werror"],
+}
+
+// Stock /vendor/firmware symlinks into /persist and /data, kept as in S620150: the Wi-Fi
+// driver reads its MAC address and configuration, and the modem DSP update image, through them.
+install_symlink {
+    name: "firmware_wlan_mac.bin_symlink",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/wlan_mac.bin",
+    symlink_target: "/mnt/vendor/persist/wlan_mac.bin",
+}
+
+install_symlink {
+    name: "firmware_WCNSS_qcom_cfg.ini_symlink",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/WCNSS_qcom_cfg.ini",
+    symlink_target: "/vendor/etc/wifi/WCNSS_qcom_cfg.ini",
+}
+
+install_symlink {
+    name: "firmware_wlanmdsp.otaupdate_symlink",
+    vendor: true,
+    installed_location: "firmware/wlanmdsp.otaupdate",
+    symlink_target: "/data/vendor/firmware/wlanmdsp.mbn",
 }

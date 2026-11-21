@@ -18,6 +18,12 @@ ANDROID_ROOT="${MY_DIR}/../../.."
 # Can still be used with broken XML files by using blob_fixup
 export TARGET_DISABLE_XML_FIXING=true
 
+# Package libraries and binaries as Soong prebuilts with their dependencies checked
+export TARGET_ENABLE_CHECKELF=true
+
+# patchelf 0.9 can damage binaries when adding a needed library
+export PATCHELF_VERSION=0_17_2
+
 HELPER="${ANDROID_ROOT}/tools/extract-utils/extract_utils.sh"
 if [ ! -f "${HELPER}" ]; then
     echo "Unable to find helper script at ${HELPER}"
@@ -73,6 +79,32 @@ fi
 
 function blob_fixup() {
     case "${1}" in
+        vendor/lib/hw/audio.primary.sm6150.so | vendor/lib64/hw/audio.primary.sm6150.so)
+            # mixer_update_ctls() came from Qualcomm's libtinyalsa VNDK extension
+            [ "$2" = "" ] && return 0
+            grep -q "libtinyalsa_shim.so" "${2}" || "${PATCHELF}" --add-needed "libtinyalsa_shim.so" "${2}"
+            ;;
+        vendor/etc/init/hw/init.qcom.rc)
+            # The stock wpa_supplicant service declares only the HIDL interfaces and, parsed first,
+            # would hide the source-built AIDL service of the same name
+            [ "$2" = "" ] && return 0
+            sed -i '/^service wpa_supplicant /,/^$/d' "${2}"
+            ;;
+        vendor/bin/hw/android.hardware.lights-service.qti)
+            # The _platform suffix of NDK AIDL libraries was dropped in Android 13
+            [ "$2" = "" ] && return 0
+            "${PATCHELF}" --replace-needed "android.hardware.light-V1-ndk_platform.so" "android.hardware.light-V1-ndk.so" "${2}"
+            ;;
+        vendor/lib64/hw/fingerprint.default.so)
+            # Goodix ships it with DT_SONAME libfingerprint.default.so; it is only loaded by path
+            [ "$2" = "" ] && return 0
+            "${PATCHELF}" --set-soname "fingerprint.default.so" "${2}"
+            ;;
+        vendor/lib64/libvendor.goodix.hardware.biometrics.fingerprint@2.1.so)
+            # gBnConstructorMap, no longer exported by libhidlbase
+            [ "$2" = "" ] && return 0
+            grep -q "libhidlbase_shim.so" "${2}" || "${PATCHELF}" --add-needed "libhidlbase_shim.so" "${2}"
+            ;;
         *)
             return 1
             ;;
