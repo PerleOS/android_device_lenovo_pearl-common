@@ -1,0 +1,5 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Property of the stock S620150 odm build.prop that the build does not write.
+ro.vendor.qti.va_odm.support=1
