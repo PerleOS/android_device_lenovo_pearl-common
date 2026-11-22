@@ -86,9 +86,11 @@ function blob_fixup() {
             ;;
         vendor/etc/init/hw/init.qcom.rc)
             # The stock wpa_supplicant service declares only the HIDL interfaces and, parsed first,
-            # would hide the source-built AIDL service of the same name
+            # would hide the source-built AIDL service of the same name.
+            # qti-testscripts runs /product/etc/init.qcom.testscripts.sh, which no build ships.
             [ "$2" = "" ] && return 0
-            sed -i '/^service wpa_supplicant /,/^$/d' "${2}"
+            sed -i -e '/^service wpa_supplicant /,/^$/d' -e '/^service qti-testscripts /,/^$/d' \
+                -e '/^    start qti-testscripts$/d' "${2}"
             ;;
         vendor/etc/init/hw/init.qcom.usb.rc|vendor/etc/init/hw/init.qti.ufs.rc)
             # The QTI debug scripts run in vendor-qti-testscripts, a domain the vendor policy
