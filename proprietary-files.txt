@@ -48,10 +48,6 @@ vendor/etc/mixer_paths_tavil.xml
 vendor/etc/mixer_paths_wcd9375.xml
 vendor/etc/mixer_paths_wcd9375qrd.xml
 vendor/etc/r_submix_audio_policy_configuration.xml
-vendor/etc/sound_trigger_mixer_paths.xml
-vendor/etc/sound_trigger_mixer_paths_qrd.xml
-vendor/etc/sound_trigger_mixer_paths_wcd9340.xml
-vendor/etc/sound_trigger_platform_info.xml
 vendor/etc/usb_audio_policy_configuration.xml
 vendor/firmware/asrp_params_melon_aecnr_dual_mic.bin
 vendor/firmware/cs35l41-dsp1-spk-cali.bin
@@ -78,7 +74,6 @@ vendor/firmware/spk4_fast_switch3.txt
 vendor/lib/btaudio_offload_if.so
 vendor/lib/hw/audio.bluetooth_qti.default.so
 vendor/lib/hw/audio.primary.sm6150.so
-vendor/lib/hw/sound_trigger.primary.sm6150.so
 vendor/lib/hw/vendor.qti.hardware.bluetooth_audio@2.0-impl.so
 vendor/lib/hw/vendor.qti.hardware.bluetooth_audio@2.1-impl.so
 vendor/lib/libacdb-fts.so
@@ -93,12 +88,9 @@ vendor/lib/libaudioparsers.so
 vendor/lib/libbatterylistener.so
 vendor/lib/libbluetooth_audio_session_qti.so
 vendor/lib/libbluetooth_audio_session_qti_2_1.so
-vendor/lib/libcapiv2svacnn.so
-vendor/lib/libcapiv2vop.so
 vendor/lib/libcdsp_default_listener.so
 vendor/lib/libhdmipassthru.so
 vendor/lib/liblistensoundmodel2.so
-vendor/lib/libmulawdec.so
 vendor/lib/libsndmonitor.so
 vendor/lib/libssc_default_listener.so
 vendor/lib/libssrec.so
@@ -122,7 +114,6 @@ vendor/lib/vendor.dolby.hardware.dms@2.0.so
 vendor/lib64/btaudio_offload_if.so
 vendor/lib64/hw/audio.bluetooth_qti.default.so
 vendor/lib64/hw/audio.primary.sm6150.so
-vendor/lib64/hw/sound_trigger.primary.sm6150.so
 vendor/lib64/hw/vendor.qti.hardware.bluetooth_audio@2.0-impl.so
 vendor/lib64/hw/vendor.qti.hardware.bluetooth_audio@2.1-impl.so
 vendor/lib64/libacdb-fts.so
@@ -136,12 +127,9 @@ vendor/lib64/libaudioparsers.so
 vendor/lib64/libbatterylistener.so
 vendor/lib64/libbluetooth_audio_session_qti.so
 vendor/lib64/libbluetooth_audio_session_qti_2_1.so
-vendor/lib64/libcapiv2svacnn.so
-vendor/lib64/libcapiv2vop.so
 vendor/lib64/libcdsp_default_listener.so
 vendor/lib64/libhdmipassthru.so
 vendor/lib64/liblistensoundmodel2.so
-vendor/lib64/libmulawdec.so
 vendor/lib64/libsndmonitor.so
 vendor/lib64/libssc_default_listener.so
 vendor/lib64/libssrec.so
@@ -1352,7 +1340,6 @@ vendor/lib/libminksocket.so
 vendor/lib/libMpeg4SwEncoder.so
 vendor/lib/liboemcrypto.so
 vendor/lib/libpdmapper.so
-vendor/lib/libsmwrapper.so
 vendor/lib/libsoc_helper.so
 vendor/lib/libspkrprot.so
 vendor/lib/libsurround_3mic_proc.so

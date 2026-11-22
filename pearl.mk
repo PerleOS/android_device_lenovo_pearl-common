@@ -90,12 +90,15 @@ DEVICE_PACKAGE_OVERLAYS += $(COMMON_PATH)/overlay
 
 # Audio: Lenovo's audio module (audio.primary.sm6150, with the Cirrus CS35L41 calibration and
 # protection) and its feature libraries stay stock; the AOSP HIDL 6.0 wrapper loads it.
+# No sound trigger HAL: the stock sound_trigger.primary implements device API 1.0, while the
+# sound trigger 2.3 wrapper, the lowest version the FCM 7 matrix accepts, needs API 1.3. It
+# closes the device on open, which leaves the library in a state that aborts the audio
+# module. Without the library the audio module skips sound trigger.
 PRODUCT_PACKAGES += \
     android.hardware.audio.service \
     android.hardware.audio@6.0-impl \
     android.hardware.audio.effect@6.0-impl \
     android.hardware.bluetooth.audio-impl \
-    android.hardware.soundtrigger@2.3-impl \
     audio.bluetooth.default \
     audio.r_submix.default \
     audio.usb.default \
@@ -182,8 +185,11 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.vibrator.service
 
 # Wi-Fi: hostapd and wpa_supplicant from source; the stock Wi-Fi HAL service stays.
-# libwpa_client is linked by the stock lowi-server and mutualex.
+# libwpa_client is linked by the stock lowi-server and mutualex; mutualex also links the HIDL
+# hostapd and supplicant 1.0 libraries. Both use DISABLE_DEPS, so these are listed here.
 PRODUCT_PACKAGES += \
+    android.hardware.wifi.hostapd@1.0.vendor \
+    android.hardware.wifi.supplicant@1.0.vendor \
     firmware_WCNSS_qcom_cfg.ini_symlink \
     firmware_wlan_mac.bin_symlink \
     firmware_wlanmdsp.otaupdate_symlink \

@@ -5,7 +5,7 @@
 
     HALs served by the stock TB-J706F S620150 vendor blobs, and by source-built modules that
     install no VINTF fragment of their own (audio 6.0 wrapper, camera provider, OMX,
-    RenderScript, sound trigger 2.3). Entries are copied from the stock /vendor/etc/vintf
+    RenderScript). Entries are copied from the stock /vendor/etc/vintf
     manifest and fragments. HALs built from source with their own fragment (display, health,
     power, memtrack, boot, Bluetooth audio, Wi-Fi hostapd and supplicant, sensors, USB, CAS,
     vibrator, fingerprint wrapper, atrace) are not listed here.
@@ -144,16 +144,6 @@
             <instance>default</instance>
         </interface>
         <fqname>@1.0::IDevice/default</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.soundtrigger</name>
-        <transport>hwbinder</transport>
-        <version>2.3</version>
-        <interface>
-            <name>ISoundTriggerHw</name>
-            <instance>default</instance>
-        </interface>
-        <fqname>@2.3::ISoundTriggerHw/default</fqname>
     </hal>
     <hal format="hidl">
         <name>android.hardware.wifi</name>
