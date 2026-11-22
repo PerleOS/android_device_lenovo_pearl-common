@@ -205,6 +205,9 @@ WIFI_DRIVER_DEFAULT := qca_cld3
 WIFI_DRIVER_STATE_CTRL_PARAM := "/dev/wlan"
 WIFI_DRIVER_STATE_OFF := "OFF"
 WIFI_DRIVER_STATE_ON := "ON"
+# One STA with one AP or one P2P interface: without it the HAL reports a single interface and
+# the framework stops Wi-Fi to start the hotspot
+WIFI_HIDL_FEATURE_DUAL_INTERFACE := true
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 WPA_SUPPLICANT_VERSION := VER_0_8_X
 
