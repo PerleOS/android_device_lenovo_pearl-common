@@ -1133,7 +1133,6 @@ vendor/lib64/vendor.qti.hardware.sensorscalibrate@1.0.so
 
 # Wi-Fi
 vendor/bin/athdiag
-vendor/bin/hw/android.hardware.wifi@1.0-service
 vendor/bin/init.crda.sh
 vendor/etc/countrycode/Aaron_config.xml
 vendor/etc/countrycode/AE_config.xml
@@ -1239,7 +1238,6 @@ vendor/etc/countrycode/ZA_config.xml
 vendor/etc/hostapd/hostapd.accept
 vendor/etc/hostapd/hostapd.deny
 vendor/etc/hostapd/hostapd_default.conf
-vendor/etc/init/android.hardware.wifi@1.0-service.rc
 vendor/etc/wifi/aoa_cldb_falcon.bin
 vendor/etc/wifi/aoa_cldb_swl14.bin
 vendor/etc/wifi/icm.conf

@@ -184,10 +184,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.vibrator.service
 
-# Wi-Fi: hostapd and wpa_supplicant from source; the stock Wi-Fi HAL service stays.
+# Wi-Fi: the HAL service, hostapd and wpa_supplicant from source, over the source
+# libwifi-hal-qcom. The stock HAL 1.4 service was built against the Android 11 wifi_hal_fn
+# table, which the current libwifi-hal overruns. The AIDL service declares its own manifest
+# fragment.
 # libwpa_client is linked by the stock lowi-server and mutualex; mutualex also links the HIDL
 # hostapd and supplicant 1.0 libraries. Both use DISABLE_DEPS, so these are listed here.
 PRODUCT_PACKAGES += \
+    android.hardware.wifi-service \
     android.hardware.wifi.hostapd@1.0.vendor \
     android.hardware.wifi.supplicant@1.0.vendor \
     firmware_WCNSS_qcom_cfg.ini_symlink \

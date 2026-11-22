@@ -194,8 +194,8 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
     vendor/lineage/config/device_framework_matrix.xml
 
-# Wi-Fi (WCN3990, qca_cld3 driver loaded by init.target.rc). hostapd, wpa_supplicant and the
-# QTI Wi-Fi HAL library are built from source; the stock Wi-Fi HAL service is kept.
+# Wi-Fi (WCN3990, qca_cld3 driver loaded by init.target.rc). hostapd, wpa_supplicant, the
+# Wi-Fi HAL service and the QTI Wi-Fi HAL library are built from source.
 BOARD_WLAN_DEVICE := qcwcn
 BOARD_HOSTAPD_DRIVER := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)

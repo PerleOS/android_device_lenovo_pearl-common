@@ -5,9 +5,9 @@
 
     HALs served by the stock TB-J706F S620150 vendor blobs, and by source-built modules that
     install no VINTF fragment of their own (audio 6.0 wrapper, camera provider, OMX,
-    RenderScript). Entries are copied from the stock /vendor/etc/vintf
-    manifest and fragments. HALs built from source with their own fragment (display, health,
-    power, memtrack, boot, Bluetooth audio, Wi-Fi hostapd and supplicant, sensors, USB, CAS,
+    RenderScript). Entries are copied from the stock /vendor/etc/vintf manifest and
+    fragments. HALs built from source with their own fragment (display, health, power,
+    memtrack, boot, Bluetooth audio, Wi-Fi, Wi-Fi hostapd and supplicant, sensors, USB, CAS,
     vibrator, fingerprint wrapper, atrace) are not listed here.
 -->
 <manifest version="2.0" type="device" target-level="7">
@@ -144,15 +144,6 @@
             <instance>default</instance>
         </interface>
         <fqname>@1.0::IDevice/default</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.wifi</name>
-        <transport>hwbinder</transport>
-        <version>1.4</version>
-        <interface>
-            <name>IWifi</name>
-            <instance>default</instance>
-        </interface>
     </hal>
     <hal format="hidl">
         <name>com.dsi.ant</name>
