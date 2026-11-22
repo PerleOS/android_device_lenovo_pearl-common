@@ -21,7 +21,7 @@ cc_library_shared {
 }
 
 // mixer_update_ctls() for the stock audio module; added to it as a needed library by
-// extract-files.sh.
+// extract-files.py.
 cc_library_shared {
     name: "libtinyalsa_shim",
     vendor: true,
