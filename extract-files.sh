@@ -90,6 +90,12 @@ function blob_fixup() {
             [ "$2" = "" ] && return 0
             sed -i '/^service wpa_supplicant /,/^$/d' "${2}"
             ;;
+        vendor/etc/init/hw/init.qcom.usb.rc|vendor/etc/init/hw/init.qti.ufs.rc)
+            # The QTI debug scripts run in vendor-qti-testscripts, a domain the vendor policy
+            # defines only on userdebug and eng builds; on user builds init aborts the exec
+            [ "$2" = "" ] && return 0
+            sed -i '/exec u:r:vendor-qti-testscripts:s0 /d' "${2}"
+            ;;
         vendor/bin/hw/android.hardware.lights-service.qti)
             # The _platform suffix of NDK AIDL libraries was dropped in Android 13
             [ "$2" = "" ] && return 0
