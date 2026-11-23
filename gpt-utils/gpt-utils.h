@@ -82,6 +82,12 @@ extern "C" {
 #define PTN_XBL_CFG                     "xbl_config"
 #define PTN_MULTIIMGOEM                 "multiimgoem"
 #define PTN_MULTIIMGQTI                 "multiimgqti"
+// Compared against by the CAF boot control sources; not in PTN_SWAP_LIST, as no such partition
+// exists on this device
+#define PTN_TME_FW                      "tme_fw"
+#define PTN_TME_SEQ_PATCH               "tme_seq_patch"
+#define PTN_TME_CFG                     "tme_cfg"
+#define PTN_XBL_AC_CFG                  "xbl_ac_config"
 /* Same lists, in the same order, as the stock S620150 libboot_control_qti.so */
 #define PTN_SWAP_LIST                   PTN_XBL, PTN_XBL_CFG, "sbl1", "rpm", "tz", "aboot", "abl", "hyp", "lksecapp", "keymaster", "cmnlib", "cmnlib32", "cmnlib64", "pmic", "apdp", "devcfg", "hosd", "keystore", "msadp", "mdtp", "mdtpsecapp", "dsp", "aop", "qupfw", "vbmeta", "dtbo", "imagefv", "ImageFv", PTN_MULTIIMGOEM, PTN_MULTIIMGQTI, "vm-bootsys", "shrm", "cpucp"
 #define AB_PTN_LIST PTN_SWAP_LIST, "boot", "system", "vendor", "odm", "modem", "bluetooth"

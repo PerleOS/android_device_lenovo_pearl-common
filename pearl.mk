@@ -123,22 +123,22 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
     android.hardware.camera.provider@2.4-service_64
 
+# Mount points of the modem, bluetooth and dsp partitions (fstab.qcom), empty directories in
+# the stock vendor image. Without them init's mount_all --early (init.target.rc) mounts none of
+# the three.
+PRODUCT_PACKAGES += \
+    vendor_bt_firmware_mountpoint \
+    vendor_dsp_mountpoint \
+    vendor_firmware_mnt_mountpoint
+
 # Display (CAF sm8150 display HAL, as on the LineageOS sm6150 devices)
 PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.4-service \
     android.hardware.graphics.mapper@3.0-impl-qti-display \
     android.hardware.graphics.mapper@4.0-impl-qti-display \
-    gralloc.sm6150 \
-    hwcomposer.sm6150 \
-    lights.sm6150 \
+    hwcomposer.qcom \
     vendor.qti.hardware.display.allocator-service \
     vendor.qti.hardware.memtrack-service
-
-# The AOSP base vendor adds the configstore HAL for shipping API level 29. It is deprecated
-# (absent from the FCM 7 matrix), the stock vendor did not ship it, and SurfaceFlinger reads
-# its settings from system properties.
-PRODUCT_PACKAGES += \
-    disable_configstore
 
 # Fingerprint: the AOSP 2.1 service loads Goodix's fingerprint.default module (blob)
 PRODUCT_PACKAGES += \

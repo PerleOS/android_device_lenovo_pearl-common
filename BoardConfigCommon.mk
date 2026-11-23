@@ -87,7 +87,13 @@ BOARD_MKBOOTIMG_ARGS += --os_version 11.0.0 --os_patch_level 2021-12
 TARGET_KERNEL_CLANG_VERSION := r416183b
 # Recursive assignment: BUILD_TOP is not set yet when BoardConfig is read.
 TARGET_KERNEL_CLANG_PATH = $(BUILD_TOP)/prebuilts/clang/kernel/linux-x86/clang-r416183b
-TARGET_KERNEL_LLVM_BINUTILS := false
+# The default command line passes LD=ld.lld and leaves HOSTCC to the kernel, which defaults to
+# gcc: Linux 4.14 has no LLVM=1 support
+KERNEL_CROSS_COMPILE = CROSS_COMPILE="$(BUILD_TOP)/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-"
+KERNEL_CC = CC="$(CCACHE_BIN) clang"
+# In the make flags, which also reach the Soong rule that installs the kernel headers
+TARGET_KERNEL_ADDITIONAL_FLAGS = HOSTCC=$(TARGET_KERNEL_CLANG_PATH)/bin/clang \
+    HOSTCXX=$(TARGET_KERNEL_CLANG_PATH)/bin/clang++
 TARGET_KERNEL_DTB := qcom/sdmmagpie.dtb qcom/sdmmagpiep.dtb
 
 # The 38 in-tree modules install to /vendor/lib/modules, where init.target.rc loads them. Their
@@ -159,7 +165,7 @@ USE_DEVICE_SPECIFIC_AUDIO := true
 AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
 
 # Display: board flags of the CAF sm8150 display tree (config/display-board.mk), which the
-# product does not include. TARGET_USES_HWC2 builds hwcomposer.sm6150, as on stock.
+# product does not include. TARGET_USES_HWC2 builds hwcomposer.qcom (hwcomposer.sm6150 on stock).
 TARGET_USES_GRALLOC1 := true
 TARGET_USES_GRALLOC4 := true
 TARGET_USES_DRM_PP := true
@@ -191,8 +197,7 @@ ODM_MANIFEST_FILES := $(COMMON_PATH)/vintf/manifest-odm.xml
 DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
     $(COMMON_PATH)/framework_compatibility_matrix.xml \
-    hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
-    vendor/lineage/config/device_framework_matrix.xml
+    hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml
 
 # Wi-Fi (WCN3990, qca_cld3 driver loaded by init.target.rc). hostapd, wpa_supplicant, the
 # Wi-Fi HAL service and the QTI Wi-Fi HAL library are built from source.

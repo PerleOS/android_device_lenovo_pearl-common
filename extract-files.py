@@ -85,6 +85,14 @@ blob_fixups: blob_fixups_user_type = {
         # The _platform suffix of NDK AIDL libraries was dropped in Android 13
         .call(patchelf('--replace-needed', 'android.hardware.light-V1-ndk_platform.so',
                        'android.hardware.light-V1-ndk.so')),
+    (
+        'vendor/lib/mediadrm/libwvdrmengine.so',
+        'vendor/lib64/mediadrm/libwvdrmengine.so',
+        'vendor/lib64/libwvhidl.so',
+    ): blob_fixup()
+        # CBS_init, inline in later BoringSSL versions
+        .patchelf_version(PATCHELF_VERSION)
+        .add_needed('libcrypto_shim.so'),
     'vendor/lib64/hw/fingerprint.default.so': blob_fixup()
         # Goodix ships it with DT_SONAME libfingerprint.default.so; it is only loaded by path
         .call(patchelf('--set-soname', 'fingerprint.default.so')),
