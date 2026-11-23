@@ -135,10 +135,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/rootdir/etc/init.recovery.qcom.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.qcom.rc
 
-# Wi-Fi resources (com.android.wifi.resources, in the Wi-Fi APEX)
-PRODUCT_PACKAGES += \
-    WifiResOverlayPearl
-
 # ION: on lineage-24.0 libion is a stub (ion_open() returns -1) unless legacy_impl is set. The stock libQSEEComAPI
 # (keymaster, gatekeeper) allocates through it, and the 4.14 kernel has only the legacy ION ABI.
 $(call soong_config_set_bool,libion,legacy_impl,true)
