@@ -23,3 +23,6 @@ genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-00/c440000.q
 genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-00/c440000.qcom,spmi:qcom,pm6150@0:qpnp,qg/power_supply/bms/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-04/c440000.qcom,spmi:qcom,pm6150l@4:qcom,power-on@800/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/soc:hall/wakeup u:object_r:sysfs_wakeup:s0
+
+# Lenovo fuel gauge (TI bq27541) on the i2c-2 bus, read by the health HAL
+genfscon sysfs /devices/platform/soc/a8c000.i2c/i2c-2/2-0055/power_supply u:object_r:sysfs_batteryinfo:s0
