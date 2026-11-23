@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Recovery reads no vendor init scripts, so the link that init.target.rc creates on the system is
+# made here too: recovery (BCB in misc), fastbootd and the boot control HAL (gpt-utils) open the
+# partitions through /dev/block/bootdevice/by-name.
+
+on init
+    wait /dev/block/platform/soc/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice

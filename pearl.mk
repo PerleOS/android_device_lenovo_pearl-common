@@ -131,6 +131,10 @@ PRODUCT_PACKAGES += \
     vendor_dsp_mountpoint \
     vendor_firmware_mnt_mountpoint
 
+# Recovery: /dev/block/bootdevice, which recovery and fastbootd need
+PRODUCT_COPY_FILES += \
+    $(COMMON_PATH)/rootdir/etc/init.recovery.qcom.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.qcom.rc
+
 # Wi-Fi resources (com.android.wifi.resources, in the Wi-Fi APEX)
 PRODUCT_PACKAGES += \
     WifiResOverlayPearl
