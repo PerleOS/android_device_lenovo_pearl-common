@@ -184,6 +184,7 @@ TARGET_USES_ION := true
 # Properties
 TARGET_VENDOR_PROP += $(COMMON_PATH)/vendor.prop
 TARGET_ODM_PROP += $(COMMON_PATH)/odm.prop
+TARGET_PRODUCT_PROP += $(COMMON_PATH)/product.prop
 
 # Keep the stock vendor security patch level, for the same reason as the boot image's: the
 # stock Keymaster binds keys to it and only moves it forward.

@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+
+# eBPF: the Android 17 bpf loader aborts below kernel 5.10. The 4.14 kernel carries the
+# BPF backports the loader needs at that level (kernel commits up to 3b4e88a3c48f).
+ro.bpf.kver_override=5.10.239
