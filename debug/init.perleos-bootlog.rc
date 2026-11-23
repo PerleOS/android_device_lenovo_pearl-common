@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: The PerleOS Project
+# SPDX-License-Identifier: Apache-2.0
+#
+# Boot log for PERLEOS_BOOT_DEBUG builds only (userdebug, SELinux permissive): logcat, kernel log
+# snapshots and the device and mount state go to /metadata, which is mounted early, is not
+# encrypted and is readable from recovery. About 9 MB at most: /metadata is 16 MiB and also holds
+# the encryption keys. Snapshots are written with sync, as the tablet is reset by force.
+
+on post-fs
+    mkdir /metadata/perleos-debug 0770 root root
+    start perleos_bootlog
+    start perleos_kmsg
+
+service perleos_bootlog /system/bin/logcat -b all -v threadtime -f /metadata/perleos-debug/logcat.txt -r 4096 -n 1 *:V DEBUG:S crash_dump32:S crash_dump64:S HidlServiceManagement:S libbinder.ServiceManagerCppClient:S hwservicemanager:S servicemanager:S
+    user root
+    group root log
+    seclabel u:r:su:s0
+    disabled
+    oneshot
+
+service perleos_kmsg /system/bin/sh -c "sleep 60; (ls -lZ /dev/ion /dev/qseecom /vendor/firmware_mnt /vendor/firmware_mnt/image; cat /proc/mounts; getprop) > /metadata/perleos-debug/state.txt 2>&1; sync; while true; do dmesg > /metadata/perleos-debug/dmesg.txt; sync; sleep 20; done"
+    user root
+    group root
+    seclabel u:r:su:s0
+    disabled
+    oneshot

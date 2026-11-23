@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+import os
+import struct
 import sys
 from functools import partial
 
@@ -93,6 +95,12 @@ blob_fixups: blob_fixups_user_type = {
         # CBS_init, inline in later BoringSSL versions
         .patchelf_version(PATCHELF_VERSION)
         .add_needed('libcrypto_shim.so'),
+    'vendor/etc/wifi/wpa_supplicant_overlay.conf': blob_fixup()
+        # The supplicant template forces RSN overriding on; the driver builds the association
+        # request (no WPA_DRIVER_FLAGS_SME) without the RSN selection element, so access points
+        # in WPA2/WPA3 transition mode with RSNE override reject EAPOL-Key 2/4. Read after
+        # wpa_supplicant.conf, the overlay turns it off.
+        .add_line_if_missing('rsn_overriding=0'),
     'vendor/lib64/hw/fingerprint.default.so': blob_fixup()
         # Goodix ships it with DT_SONAME libfingerprint.default.so; it is only loaded by path
         .call(patchelf('--set-soname', 'fingerprint.default.so')),
@@ -119,3 +127,20 @@ if __name__ == '__main__':
 
     utils = ExtractUtils.device(module)
     utils.run()
+
+    # The stock dtbo, which the recovery image carries as recovery_dtbo
+    # (BOARD_INCLUDE_RECOVERY_DTBO), cut to the size in its DT table header, as the stock
+    # recovery embeds it. Taken from dtbo.img next to the unpacked partitions.
+    if positional:
+        src = os.path.join(positional[0], 'dtbo.img')
+        if not os.path.isfile(src):
+            sys.exit(f'{src} missing: copy the stock dtbo.img next to the unpacked partitions')
+        with open(src, 'rb') as f:
+            data = f.read()
+        magic, total_size = struct.unpack('>II', data[:8])
+        if magic != 0xD7B7AB1E:
+            sys.exit(f'{src}: not a DT table image')
+        dst = os.path.join(module.vendor_path, 'prebuilt', 'dtbo.img')
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        with open(dst, 'wb') as f:
+            f.write(data[:total_size])

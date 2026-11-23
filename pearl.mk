@@ -131,6 +131,14 @@ PRODUCT_PACKAGES += \
     vendor_dsp_mountpoint \
     vendor_firmware_mnt_mountpoint
 
+# Wi-Fi resources (com.android.wifi.resources, in the Wi-Fi APEX)
+PRODUCT_PACKAGES += \
+    WifiResOverlayPearl
+
+# ION: on lineage-24.0 libion is a stub (ion_open() returns -1) unless legacy_impl is set. The stock libQSEEComAPI
+# (keymaster, gatekeeper) allocates through it, and the 4.14 kernel has only the legacy ION ABI.
+$(call soong_config_set_bool,libion,legacy_impl,true)
+
 # Display (CAF sm8150 display HAL, as on the LineageOS sm6150 devices)
 PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.4-service \
@@ -251,3 +259,9 @@ PRODUCT_SOONG_NAMESPACES += \
 
 # Proprietary files
 $(call inherit-product, vendor/lenovo/pearl-common/pearl-common-vendor.mk)
+
+# Boot debugging (see BoardConfigCommon.mk)
+ifeq ($(PERLEOS_BOOT_DEBUG),true)
+PRODUCT_COPY_FILES += \
+    $(COMMON_PATH)/debug/init.perleos-bootlog.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.perleos-bootlog.rc
+endif

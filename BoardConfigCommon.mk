@@ -55,6 +55,12 @@ BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 
+# Recovery: the bootloader applies the overlays carried in the recovery image (recovery_dtbo),
+# not the dtbo partition; without them it returns to its menu. The stock recovery carries
+# the stock dtbo, which is not built from source (the partition itself stays stock).
+BOARD_INCLUDE_RECOVERY_DTBO := true
+BOARD_PREBUILT_DTBOIMAGE := vendor/lenovo/pearl-common/prebuilt/dtbo.img
+
 # Stock command line, except its trailing "buildvariant=user": whether to keep it for a
 # userdebug boot image is decided in phase 1b.
 BOARD_KERNEL_CMDLINE := \
@@ -221,3 +227,11 @@ WPA_SUPPLICANT_VERSION := VER_0_8_X
 TARGET_SEPOLICY_DIR := msmsteppe
 include device/qcom/sepolicy_vndr/SEPolicy.mk
 BOARD_VENDOR_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
+# Legacy ION ioctls for the stock QSEECom, keymaster and media blobs (see pearl.mk)
+include device/lineage/sepolicy/libion/sepolicy.mk
+
+# Boot debugging (PERLEOS_BOOT_DEBUG=true in the environment, userdebug only): SELinux
+# permissive, and the boot log of debug/init.perleos-bootlog.rc
+ifeq ($(PERLEOS_BOOT_DEBUG),true)
+BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
+endif
