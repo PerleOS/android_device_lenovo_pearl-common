@@ -335,13 +335,15 @@ service thermal-engine /system/vendor/bin/thermal-engine
 on property:persist.vendor.camera.packagename=*
    setprop odm.tblenovo.packagename ${persist.vendor.camera.packagename}
 
-on property:vold.decrypt=trigger_restart_framework
+# The vendor policy lets cnss_diag write its logs only on userdebug and eng builds
+on property:ro.debuggable=1
    start vendor.cnss_diag
 
 service vendor.cnss_diag /system/vendor/bin/cnss_diag -q -f -t HELIUM
    class main
    user system
    group system wifi inet sdcard_rw media_rw diag
+   disabled
    oneshot
 
 #service nqs /system/bin/nqs
