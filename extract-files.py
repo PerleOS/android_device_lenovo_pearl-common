@@ -10,6 +10,7 @@ import struct
 import sys
 from functools import partial
 
+from extract_utils.args import ArgsSource, parse_args
 from extract_utils.fixups_blob import (
     blob_fixup,
     blob_fixups_user_type,
@@ -121,18 +122,15 @@ module = ExtractUtilsModule(
 if __name__ == '__main__':
     # Blobs come only from an unpacked stock TB-J706F_S620150_211226_ROW dump, never from a
     # connected device (which may run another firmware) or another model.
-    positional = [a for a in sys.argv[1:] if not a.startswith('-')]
-    if '--regenerate_makefiles' not in sys.argv and (not positional or 'adb' in positional):
-        sys.exit(f'Usage: {sys.argv[0]} [options] <path to the unpacked stock S620150 ROW partitions>')
-
-    utils = ExtractUtils.device(module)
-    utils.run()
-
-    # The stock dtbo, which the recovery image carries as recovery_dtbo
-    # (BOARD_INCLUDE_RECOVERY_DTBO), cut to the size in its DT table header, as the stock
-    # recovery embeds it. Taken from dtbo.img next to the unpacked partitions.
-    if positional:
-        src = os.path.join(positional[0], 'dtbo.img')
+    args = parse_args()
+    if not args.regenerate_makefiles:
+        source = args.source
+        if source == ArgsSource.ADB or not isinstance(source, str) or not os.path.isdir(source):
+            sys.exit(
+                f'Usage: {sys.argv[0]} [options] '
+                '<path to the unpacked stock S620150 ROW partitions>'
+            )
+        src = os.path.join(source, 'dtbo.img')
         if not os.path.isfile(src):
             sys.exit(f'{src} missing: copy the stock dtbo.img next to the unpacked partitions')
         with open(src, 'rb') as f:
@@ -140,6 +138,14 @@ if __name__ == '__main__':
         magic, total_size = struct.unpack('>II', data[:8])
         if magic != 0xD7B7AB1E:
             sys.exit(f'{src}: not a DT table image')
+
+    utils = ExtractUtils.device(module)
+    utils.run()
+
+    # The stock dtbo, which the recovery image carries as recovery_dtbo
+    # (BOARD_INCLUDE_RECOVERY_DTBO), cut to the size in its DT table header, as the stock
+    # recovery embeds it. Taken from dtbo.img next to the unpacked partitions.
+    if not args.regenerate_makefiles:
         dst = os.path.join(module.vendor_path, 'prebuilt', 'dtbo.img')
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         with open(dst, 'wb') as f:
