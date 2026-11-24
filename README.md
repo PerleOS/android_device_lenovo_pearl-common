@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # Lenovo Tab P11 Pro common tree (pearl)
 
-Common PerleOS device tree for the Lenovo Tab P11 Pro family (codename `pearl`): TB-J706F (Wi-Fi), with the TB-J706L (LTE) prepared later. PerleOS is based on LineageOS 21 (`lineage-21.0`). It is not affiliated with Lenovo or LineageOS.
+Common PerleOS device tree for the Lenovo Tab P11 Pro family (codename `pearl`): TB-J706F (Wi-Fi), with the TB-J706L (LTE) prepared later. PerleOS is based on LineageOS 24 (`lineage-24.0`). It is not affiliated with Lenovo or LineageOS.
 
 | Device | Tree |
 |---|---|
@@ -13,7 +13,7 @@ Common PerleOS device tree for the Lenovo Tab P11 Pro family (codename `pearl`):
 
 ## Current phase
 
-The trees build `boot` (kernel from source), `system`, `system_ext` and `product`. The stock vendor and DTBO of the TB-J706F firmware `S620150_211226_ROW` stay on the device. These images are written to `boot_a`, `system_a`, `system_ext_a` and `product_a`. Never use `fastboot update`, `flashall` or `update-super` with them: their super layout has no `vendor`, so those commands would remove `vendor_a` from the device.
+The trees build `boot` (kernel from source), `vendor`, `system`, `system_ext`, `product` and `recovery`. The stock `dtbo`, `vbmeta` and `vbmeta_system` of the TB-J706F firmware `S620150_211226_ROW` stay on the device. Images are written one at a time, from one build, to `boot_a`, `vendor_a`, `system_a`, `system_ext_a`, `product_a` and, when wanted, `recovery_a`. Never use `fastboot update`, `flashall` or `update-super`: a full build also defines `dtbo.img` and `vbmeta.img`, and those partitions must stay stock.
 
 The system images need the `boot.img` of this build. They use the unmodified LineageOS BPF loaders and network stack, which need BPF object names and per-file bpffs labels; the stock kernel has neither, so with the stock boot image the device boot-loops (`bpfloader` fails).
 
