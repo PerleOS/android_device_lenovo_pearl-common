@@ -61,8 +61,7 @@ BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 BOARD_INCLUDE_RECOVERY_DTBO := true
 BOARD_PREBUILT_DTBOIMAGE := vendor/lenovo/pearl-common/prebuilt/dtbo.img
 
-# Stock command line, except its trailing "buildvariant=user": whether to keep it for a
-# userdebug boot image is decided in phase 1b.
+# Stock command line, except its trailing "buildvariant=user".
 BOARD_KERNEL_CMDLINE := \
     console=ttyMSM0,115200n8 \
     androidboot.hardware=qcom \
@@ -87,7 +86,7 @@ BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_MKBOOTIMG_ARGS += --os_version 11.0.0 --os_patch_level 2021-12
 
 # Kernel source (kernel/lenovo/sm6150). Built like the stock kernel: clang with GNU
-# binutils 2.27, so that the stock vendor modules keep loading (same symbol CRCs).
+# binutils 2.27.
 # Only the base SoC device trees are built; the bootloader picks sdmmagpiep on this SoC
 # and applies the stock dtbo on top.
 TARGET_KERNEL_CLANG_VERSION := r416183b
@@ -102,7 +101,7 @@ TARGET_KERNEL_ADDITIONAL_FLAGS = HOSTCC=$(TARGET_KERNEL_CLANG_PATH)/bin/clang \
     HOSTCXX=$(TARGET_KERNEL_CLANG_PATH)/bin/clang++
 TARGET_KERNEL_DTB := qcom/sdmmagpie.dtb qcom/sdmmagpiep.dtb
 
-# The 38 in-tree modules install to /vendor/lib/modules, where init.target.rc loads them. Their
+# The in-tree modules install to /vendor/lib/modules, where init.target.rc loads them. Their
 # file names differ from stock (wlan.ko, not qca_cld3_wlan.ko; X_dlkm.ko, not audio_X.ko), and
 # init.target.rc uses the new ones.
 
@@ -232,6 +231,6 @@ include device/lineage/sepolicy/libion/sepolicy.mk
 
 # Boot debugging (PERLEOS_BOOT_DEBUG=true in the environment, userdebug only): SELinux
 # permissive, and the boot log of debug/init.perleos-bootlog.rc
-ifeq ($(PERLEOS_BOOT_DEBUG),true)
+ifeq ($(PERLEOS_BOOT_DEBUG)-$(TARGET_BUILD_VARIANT),true-userdebug)
 BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
 endif

@@ -261,7 +261,7 @@ PRODUCT_SOONG_NAMESPACES += \
 $(call inherit-product, vendor/lenovo/pearl-common/pearl-common-vendor.mk)
 
 # Boot debugging (see BoardConfigCommon.mk)
-ifeq ($(PERLEOS_BOOT_DEBUG),true)
+ifeq ($(PERLEOS_BOOT_DEBUG)-$(TARGET_BUILD_VARIANT),true-userdebug)
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/debug/init.perleos-bootlog.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.perleos-bootlog.rc
 endif
