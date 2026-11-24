@@ -32,10 +32,13 @@ TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
 
 # A/B on dynamic partitions; slot B partitions are empty on stock, so no virtual A/B.
-# Not usable for OTA yet: boot is missing from the list, and the vendor modules must come with
-# the kernel they were built with. dtbo and vbmeta would stay stock.
+# boot and vendor go together: the vendor modules must come with the kernel they were built
+# with. dtbo, vbmeta and recovery are not updated. Not usable for OTA yet: not tested, the
+# other slot needs the stock vbmeta with verification disabled, and the stock package writes
+# no recovery_b.
 AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS := \
+    boot \
     product \
     system \
     system_ext \
@@ -83,7 +86,10 @@ BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 # patch level and only moves it forward, so a later date in boot.img would make a return
 # to the stock boot image lose them. BOARD_MKBOOTIMG_ARGS comes after the build's own
 # --os_version/--os_patch_level, and mkbootimg keeps the last value.
-BOARD_MKBOOTIMG_ARGS += --os_version 11.0.0 --os_patch_level 2021-12
+# The release tools rebuild boot.img and recovery.img from the target files with the build's
+# own values last (mkbootimg_version_args in misc_info.txt), so those are overridden as well.
+override INTERNAL_MKBOOTIMG_VERSION_ARGS := --os_version 11.0.0 --os_patch_level 2021-12
+BOARD_MKBOOTIMG_ARGS += $(INTERNAL_MKBOOTIMG_VERSION_ARGS)
 
 # Kernel source (kernel/lenovo/sm6150). Built like the stock kernel: clang with GNU
 # binutils 2.27.
