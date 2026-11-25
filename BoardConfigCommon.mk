@@ -33,13 +33,14 @@ TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
 
 # A/B on dynamic partitions; slot B partitions are empty on stock, so no virtual A/B.
 # boot and vendor go together: the vendor modules must come with the kernel they were built
-# with. dtbo, vbmeta and recovery are not updated. Not usable for OTA yet: not tested, the
-# other slot needs the stock vbmeta with verification disabled, and the stock package writes
-# no recovery_b.
+# with. recovery is in the list because the stock package writes no recovery_b. dtbo and vbmeta
+# are not updated. Not usable for OTA yet: not tested, and the other slot needs the stock vbmeta
+# with verification disabled.
 AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS := \
     boot \
     product \
+    recovery \
     system \
     system_ext \
     vendor
