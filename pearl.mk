@@ -18,6 +18,10 @@ PRODUCT_AAPT_PREF_CONFIG := xhdpi
 # Images are flashed one by one from fastbootd; no super_empty.img.
 PRODUCT_BUILD_SUPER_EMPTY_IMAGE := false
 
+# Kernel 4.14 lacks AS_IS_LLVM, CC_IS_CLANG and LD_IS_LLD, which the framework matrix requires:
+# skip the kernel part of the VINTF check
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
