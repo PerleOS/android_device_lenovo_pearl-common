@@ -160,14 +160,6 @@ ro.odm.lenovo.videocall=false
 ro.odm.lenovo.sku=pearl_row_wifi
 ro.odm.lenovo.region=row
 ro.odm.lenovo.tablet=wifi
-persist.sys.lenovo.shutdown=TRUE
-persist.sys.lenovo.log.limit=4000
-persist.sys.lenovo.log.disk=/sdcard
-persist.sys.lenovo.log.system=TRUE
-persist.sys.lenovo.log.kernel=TRUE
-persist.sys.lenovo.log.other=TRUE
-persist.sys.lenovo.log.bt=TRUE
-persist.sys.lenovo.log=FALSE
 
 # Perf
 ro.vendor.extension_library=libqti-perfd-client.so
@@ -181,11 +173,11 @@ wifi.aware.interface=wifi-aware0
 
 # Other
 persist.vendor.qcomsysd.enabled=1
-persist.backup.ntpServer=0.pool.ntp.org
 sys.vendor.shutdown.waittime=500
 ro.frp.pst=/dev/block/bootdevice/by-name/frp
 ro.crypto.volume.filenames_mode=aes-256-cts
 ro.incremental.enable=1
 ro.hardware.keystore_desede=true
 persist.vendor.chg.max_volt_mv=11000
+# init.lenovo.log.rc: subsystems restart alone after a crash, no crash dump mode on panic
 persist.sys.dloadmode.config=0
