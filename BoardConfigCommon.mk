@@ -92,20 +92,10 @@ BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 override INTERNAL_MKBOOTIMG_VERSION_ARGS := --os_version 11.0.0 --os_patch_level 2021-12
 BOARD_MKBOOTIMG_ARGS += $(INTERNAL_MKBOOTIMG_VERSION_ARGS)
 
-# Kernel source (kernel/lenovo/sm6150). Built like the stock kernel: clang with GNU
-# binutils 2.27.
+# Kernel source (kernel/lenovo/sm6150), built with the default LineageOS kernel toolchain
+# (prebuilt AOSP clang with LLVM=1 LLVM_IAS=1).
 # Only the base SoC device trees are built; the bootloader picks sdmmagpiep on this SoC
 # and applies the stock dtbo on top.
-TARGET_KERNEL_CLANG_VERSION := r416183b
-# Recursive assignment: BUILD_TOP is not set yet when BoardConfig is read.
-TARGET_KERNEL_CLANG_PATH = $(BUILD_TOP)/prebuilts/clang/kernel/linux-x86/clang-r416183b
-# The default command line passes LD=ld.lld and leaves HOSTCC to the kernel, which defaults to
-# gcc: Linux 4.14 has no LLVM=1 support
-KERNEL_CROSS_COMPILE = CROSS_COMPILE="$(BUILD_TOP)/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-"
-KERNEL_CC = CC="$(CCACHE_BIN) clang"
-# In the make flags, which also reach the Soong rule that installs the kernel headers
-TARGET_KERNEL_ADDITIONAL_FLAGS = HOSTCC=$(TARGET_KERNEL_CLANG_PATH)/bin/clang \
-    HOSTCXX=$(TARGET_KERNEL_CLANG_PATH)/bin/clang++
 TARGET_KERNEL_DTB := qcom/sdmmagpie.dtb qcom/sdmmagpiep.dtb
 
 # The in-tree modules install to /vendor/lib/modules, where init.target.rc loads them. Their
